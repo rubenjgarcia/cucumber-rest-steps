@@ -226,12 +226,12 @@ With this library you can use [Cucumber](https://cucumber.io) to test REST endpo
 
 * You can access to the response object and use it to chain another request
 
-   ```
+   ```
    Given I call GET "https://github.com"
    Then I call GET "https://github.com/$.foo.bar"
    ```
-  
-  In this example we made a request and then we made another request using the value of *foo.bar* from the first response
+   
+   In this example we made a request and then we made another request using the value of *foo.bar* from the first response
    
 ## Installation
 
