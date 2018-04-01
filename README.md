@@ -21,6 +21,14 @@ With this library you can use [Cucumber](https://cucumber.io) to test REST endpo
 
    This example will make a POST request to https://github.com with a json body `{"foo": "bar", "wee": ["yi"]}`
 
+* `^I call (GET|POST|PUT|HEAD|DELETE|OPTIONS|PATCH|TRACE) "([^"]*)" with data from "([^"]*)"$` -> Make a request to a URL with the given HTTP method and use the given file to get the json body
+
+   ```
+   Given I call POST "https://github.com" with data from file "json.json":
+   ```
+
+   This example will make a POST request to https://github.com obtaining the json body from the file *json.json*
+
 * `^I call (GET|POST|PUT|HEAD|DELETE|OPTIONS|PATCH|TRACE) "([^"]*)" with query params(?:[:])?$`  -> Make a request to a URL with the given HTTP method and with the query params parsed from a [data table](https://cucumber.io/docs/reference#data-tables)
 
    ```

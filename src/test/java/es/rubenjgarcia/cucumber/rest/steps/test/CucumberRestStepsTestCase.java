@@ -43,6 +43,12 @@ public class CucumberRestStepsTestCase {
     );
 
     stubFor(
+        post("/withData")
+            .withRequestBody(equalToJson("[{\"test\": \"test\"}]"))
+            .willReturn(okJson("{\"foo\": \"bar\"}"))
+    );
+
+    stubFor(
         get(urlPathEqualTo("/withParams"))
             .withQueryParam("param", equalTo("paramValue"))
             .willReturn(okJson("[]"))

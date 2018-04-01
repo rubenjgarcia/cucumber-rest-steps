@@ -20,6 +20,30 @@ Feature: Steps scenarios
     And The response should not contain "foo" with value "wee"
     And The response should not contain "bar"
 
+  Scenario: With data from file
+    Given I call POST "http://localhost:8080/withData" with data from "json.json"
+    Then The response status should be 200
+    And The response should be:
+    """
+      foo: "bar"
+    """
+    And The response should contain "foo"
+    And The response should contain "foo" with value "bar"
+    And The response should not contain "foo" with value "wee"
+    And The response should not contain "bar"
+
+  Scenario: With data from file
+    Given I call POST "http://localhost:8080/withData" with data from "json-array.json"
+    Then The response status should be 200
+    And The response should be:
+    """
+      foo: "bar"
+    """
+    And The response should contain "foo"
+    And The response should contain "foo" with value "bar"
+    And The response should not contain "foo" with value "wee"
+    And The response should not contain "bar"
+
   Scenario: With params
     Given I call GET "http://localhost:8080/withParams" with query params:
       | param | paramValue |

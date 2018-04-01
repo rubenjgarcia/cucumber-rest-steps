@@ -7,6 +7,8 @@ import static org.junit.Assert.assertTrue;
 import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
 import static org.springframework.test.util.AssertionErrors.assertNotEquals;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import cucumber.api.DataTable;
 import cucumber.api.java8.En;
@@ -14,6 +16,7 @@ import cucumber.api.java8.StepdefBody.A2;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.net.URI;
+import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +26,7 @@ import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.minidev.json.JSONArray;
+import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -35,6 +39,7 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 import org.springframework.test.web.reactive.server.HeaderAssertions;
@@ -73,6 +78,15 @@ public class RestSteps implements En {
       Object obj = yaml.load(data);
       call(httpMethodString, path, obj);
     });
+
+    Given("^I call (" + HTTP_METHODS + ") \"([^\"]*)\" with data from \"([^\"]*)\"$",
+        (String httpMethodString, String path, String from) -> {
+          final String resource = IOUtils.resourceToString("/" + from, Charset.defaultCharset());
+          ObjectMapper mapper = new ObjectMapper();
+          JsonNode json = mapper.readTree(resource);
+          call(httpMethodString, path, json);
+        }
+    );
 
     Given("^I call (" + HTTP_METHODS + ") \"([^\"]*)\" with query params(?:[:])?$",
         (String httpMethodString, String path, DataTable paramsTable) -> {
@@ -280,6 +294,7 @@ public class RestSteps implements En {
     final RequestBodySpec requestBodySpec = webClient.method(httpMethod).uri(uri);
     if (requestObj != null) {
       requestBodySpec.syncBody(requestObj);
+      requestBodySpec.contentType(MediaType.APPLICATION_JSON);
     }
 
     if (headers != null) {
