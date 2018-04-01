@@ -224,6 +224,15 @@ With this library you can use [Cucumber](https://cucumber.io) to test REST endpo
 
    This example asserts that the response headers contain a header *foo* and hasn`t *bar* as value
 
+* You can access to the response object and use it to chain another request
+
+   ```
+   Given I call GET "https://github.com"
+   Then I call GET "https://github.com/$.foo.bar"
+   ```
+  
+  In this example we made a request and then we made another request using the value of *foo.bar* from the first response
+   
 ## Installation
 
 Add dependency to your `pom.xml`
