@@ -10,9 +10,9 @@ import static org.springframework.test.util.AssertionErrors.assertNotEquals;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
-import cucumber.api.DataTable;
 import cucumber.api.java8.En;
 import cucumber.api.java8.StepdefBody.A2;
+import io.cucumber.datatable.DataTable;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.net.URI;
@@ -25,6 +25,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import net.minidev.json.JSONArray;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
@@ -90,9 +91,9 @@ public class RestSteps implements En {
 
     Given("^I call (" + HTTP_METHODS + ") \"([^\"]*)\" with query params(?:[:])?$",
         (String httpMethodString, String path, DataTable paramsTable) -> {
-          final URI uri = paramsTable.getPickleRows().stream()
+          final URI uri = paramsTable.asLists().stream()
               .reduce(UriComponentsBuilder.fromUriString(path),
-                  (ub, r) -> ub.queryParam(r.getCells().get(0).getValue(), r.getCells().get(1).getValue()), (ub1, ub2) -> ub1)
+                  (ub, r) -> ub.queryParam(r.get(0), r.get(1)), (ub1, ub2) -> ub1)
               .build()
               .toUri();
           call(httpMethodString, uri, null);
@@ -113,7 +114,7 @@ public class RestSteps implements En {
 
     Given("^I set headers to(?:[:])?$", (DataTable headersTable) -> {
       headers = new HttpHeaders();
-      headersTable.getPickleRows().forEach(r -> headers.set(r.getCells().get(0).getValue(), r.getCells().get(1).getValue()));
+      headersTable.asLists().forEach(r -> headers.set(r.get(0), r.get(1)));
     });
 
     Then("^The response status should be (\\d+)$", (Integer status) -> {
